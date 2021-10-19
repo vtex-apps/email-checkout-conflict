@@ -1,0 +1,16 @@
+{
+  "name": "email-checkout-conflict",
+  "vendor": "vtex",
+  "version": "0.1.0",
+  "title": "Emails conflicts in checkout",
+  "description": "Compares identified user with the email used to login",
+  "builders": {
+    "docs": "0.x",
+    "checkout-ui-custom": "0.x"
+  },
+  "scripts": {
+    "prereleasy": "bash lint.sh"
+  },
+  "credentialType": "absolute",
+  "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
+}
