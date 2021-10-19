@@ -31,7 +31,8 @@ class checkEmailAuthConflict {
 
 		$(".checkEmailAuthConflict__modal").remove();
 
-		if(!_this.lang) return false
+		if(!_this.lang) return false;
+		if(!checkEmailAuthConflictMessages[this.lang]) this.lang = "en";
 		let modal = `
 			<div class="checkEmailAuthConflict__modal">
 				<div class="checkEmailAuthConflict__modal--bg"></div>
