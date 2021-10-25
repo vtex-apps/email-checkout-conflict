@@ -97,9 +97,22 @@ class checkEmailAuthConflict {
 		$(window).one('orderFormUpdated.vtex', function(evt, orderForm) {
 			_this.orderForm = orderForm;
 			_this.lang = vtex ? vtex.i18n.locale : "en";
-			_this.validate();
-			_this.bind();
-		})
+			try {
+				_this.validate();
+				_this.bind();
+			} catch(e) {
+				console.error(e)
+			} 
+		});
+
+		$(window).on('authenticatedUser.vtexid closed.vtexid', function() {
+			_this.orderForm = vtexjs.checkout.orderForm;
+			try {
+				_this.validate();
+			} catch(e) {
+				console.error(e)
+			} 
+		});
 	}
 }
 
