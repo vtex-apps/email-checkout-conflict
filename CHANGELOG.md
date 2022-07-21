@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- Validate if `userType` is `callCenterOperator`.
+
 ## [0.1.2] - 2021-10-25
 
 ### Fixed 
