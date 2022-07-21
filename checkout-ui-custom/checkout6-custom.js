@@ -94,7 +94,8 @@ class checkEmailAuthConflict {
 
 	init() {
 		const _this = this;
-		$(window).one('orderFormUpdated.vtex', function(evt, orderForm) {
+		$(window).one('orderFormUpdated.vtex', function(_, orderForm) {
+			if (orderForm.userType === 'callCenterOperator') return
 			_this.orderForm = orderForm;
 			_this.lang = vtex ? vtex.i18n.locale : "en";
 			try {
@@ -107,6 +108,7 @@ class checkEmailAuthConflict {
 
 		$(window).on('authenticatedUser.vtexid closed.vtexid', function() {
 			_this.orderForm = vtexjs.checkout.orderForm;
+			if (_this.orderForm.userType === 'callCenterOperator') return
 			try {
 				_this.validate();
 			} catch(e) {
