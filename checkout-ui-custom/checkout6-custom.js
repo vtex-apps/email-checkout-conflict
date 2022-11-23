@@ -99,7 +99,6 @@ class checkEmailAuthConflict {
 	}
 
 	validateOperations(orderForm) {
-		console.log(orderForm)
 		if (orderForm.userType === 'callCenterOperator' || ~window.location.host.indexOf(`myvtex`)) {
 			return false
 		}
@@ -108,31 +107,39 @@ class checkEmailAuthConflict {
 
 	init() {
 		const _this = this;
-		$(window).one('orderFormUpdated.vtex', function(_, orderForm) {
-			if (_this.validateOperations(orderForm)) {
 
-				_this.orderForm = orderForm;
-				_this.lang = vtex ? vtex.i18n.locale : "en";
-				try {
-					_this.validate();
-					_this.bind();
-				} catch(e) {
-					console.error(e)
+		try {
+
+			$(window).one('orderFormUpdated.vtex', function(_, orderForm) {
+				if (_this.validateOperations(orderForm)) {
+	
+					_this.orderForm = orderForm;
+					_this.lang = vtex ? vtex.i18n.locale : "en";
+					try {
+						_this.validate();
+						_this.bind();
+					} catch(e) {
+						console.error(e)
+					} 
+				}
+	
+			});
+	
+			$(window).on('authenticatedUser.vtexid closed.vtexid', function() {
+				_this.orderForm = vtexjs.checkout.orderForm;
+				if (_this.validateOperations(_this.orderForm)) {
+					try {
+						_this.validate();
+					} catch(e) {
+						console.error(e)
+					} 
 				} 
-			}
+			});
 
-		});
-
-		$(window).on('authenticatedUser.vtexid closed.vtexid', function() {
-			_this.orderForm = vtexjs.checkout.orderForm;
-			if (_this.validateOperations(_this.orderForm)) {
-				try {
-					_this.validate();
-				} catch(e) {
-					console.error(e)
-				} 
-			} 
-		});
+		} catch(e) {
+			console.error(`Error on checkEmailAuthConflict: ${e}`)
+		}
+		
 	}
 }
 
