@@ -1,148 +1,85 @@
-window.checkEmailAuthConflictMessages = {
-
-	en: {
-		title:"Emails conflict",
-		button:"Login",
-		message:"We have identified that you probably used a different login email than the one you entered previously. Please log in again by clicking the button below."
-	},
-	es: {
-		title:"Conflicto de correos electrónicos",
-		button:"Ingressar",
-		message:"Hemos identificado que probablemente utilizó una dirección de correo electrónico de inicio de sesión diferente a la que ingresó anteriormente. Vuelva a iniciar sesión haciendo clic en el botón de abajo."
-	},
-	ro: {
-		title:"Conflict adresa email",
-		button:"Loghează-te",
-		message:"Am identificat că probabil ați folosit un alt e-mail de conectare decât cel introdus anterior. Vă rugăm să vă conectați din nou făcând clic pe butonul de mai jos."
-	}
-}
-
-
 class checkEmailAuthConflict {
-	constructor({} = {}) {
-		this.orderForm = "";
-    this.lang = "";
-	}
+  static dataRendered = false;
+  constructor() {
+    this.orderForm = "";
+  }
 
-	removeModal() {
-		$(".checkEmailAuthConflict__modal").fadeOut("normal", function() {
-			$(".checkEmailAuthConflict__modal").remove();
-		});
-	} 
+  showModal() {
+    const addressInfo = b2bCheckoutSettings.addresses;
+    const formattedAddress = `
+		${addressInfo[0].receiverName}
+		${addressInfo[0].number ? addressInfo[0].number + " " : ""}${addressInfo[0].street}
+		${addressInfo[0].complement ? addressInfo[0].complement + " " : ""}
+		${addressInfo[0].neighborhood ? addressInfo[0].neighborhood + " - " : ""}${
+		addressInfo[0].city
+		}
+		${addressInfo[0].state} ${addressInfo[0].postalCode}
+		${addressInfo[0].country}
+	`;
 
-	showModal() {
-
-		const _this = this;
-
-		$(".checkEmailAuthConflict__modal").remove();
-
-		if(!_this.lang) return false;
-		if(!checkEmailAuthConflictMessages[this.lang]) this.lang = "en";
-		let modal = `
-			<div class="checkEmailAuthConflict__modal">
-				<div class="checkEmailAuthConflict__modal--bg"></div>
-				<div class="checkEmailAuthConflict__modal--wrap">
-					<h4 class="checkEmailAuthConflict__modal--title">${checkEmailAuthConflictMessages[this.lang].title}</h4>
-					<p class="checkEmailAuthConflict__modal--text">${checkEmailAuthConflictMessages[this.lang].message}</p>
-					<button class="checkEmailAuthConflict__modal--button js-checkEmailAuthConflict__modal--button">${checkEmailAuthConflictMessages[this.lang].button}</button>
-				</div>
+    const form = `
+		<form>
+		  <div>
+			<label>
+			  <input type="radio" name="parent" value="option1" checked> ${formattedAddress}
+			</label>
+			<div>
+			  <label>
+				Dropdown 1:
+				<select name="dropdown1">
+				  <option value="optionA">Option A</option>
+				  <option value="optionB">Option B</option>
+				  <option value="optionC">Option C</option>
+				</select>
+			  </label>
+			  <input type="text" name="text1">
 			</div>
-		`;
+			<label>
+			  <input type="radio" name="parent" value="option2"> Option 2
+			</label>
+			<div>
+			  <label>
+				Dropdown 2:
+				<select name="dropdown2">
+				  <option value="optionX">Option X</option>
+				  <option value="optionY">Option Y</option>
+				  <option value="optionZ">Option Z</option>
+				</select>
+			  </label>
+			  <input type="text" name="text2">
+			</div>
+		  </div>
+		</form>
+	  `;
 
-		$("body").append(modal);
+    if (!checkEmailAuthConflict.dataRendered) {
+      $(".v-custom-payment-item-wrap.active").append(form);
+      checkEmailAuthConflict.dataRendered = true;
+    }
+  }
 
-	}
+  checkPaymentStep() {
+    return window.location.hash === "#/payment";
+  }
 
-	bind() {
-		const _this = this;
+  init() {
+    const _this = this;
 
-		$("body").on("click", ".js-checkEmailAuthConflict__modal--button", function(e) {
-			e.preventDefault();
-			$(this).addClass("js-loading");
-			_this.changeUser();
-		})
-
-	}
-
-	changeUser() {
-		const _this = this;
-
-		$.ajax(`/checkout/changeToAnonymousUser/${_this.orderForm.orderFormId}`)
-		.done(function() {
-			_this.removeModal();
-			vtexid.start();
-		});
-	}
-
-	validate() {
-		const _this = this;
-		try {
-			if( 
-				_this.orderForm && 
-				_this.orderForm.clientProfileData && 
-				_this.orderForm.clientProfileData.email 
-			) {
-				fetch('/api/vtexid/pub/authenticated/user', {credentials: 'include'})
-				.then(response => response.json())
-				.then(function(response) {
-					if(!response) return false;
-					let user = response.user;
-
-					if(_this.orderForm.clientProfileData.email != user) {
-						_this.showModal();
-					}
-				})
-			}
-		} catch(e) {
-			console.error(e)
-		} 
-	}
-
-	validateOperations(orderForm) {
-		if (orderForm.userType === 'callCenterOperator' || ~window.location.host.indexOf(`myvtex`)) {
-			return false
-		}
-		return true
-	}
-
-	init() {
-		const _this = this;
-
-		try {
-
-			$(window).one('orderFormUpdated.vtex', function(_, orderForm) {
-				if (_this.validateOperations(orderForm)) {
-	
-					_this.orderForm = orderForm;
-					_this.lang = vtex ? vtex.i18n.locale : "en";
-					try {
-						_this.validate();
-						_this.bind();
-					} catch(e) {
-						console.error(e)
-					} 
-				}
-	
-			});
-	
-			$(window).on('authenticatedUser.vtexid closed.vtexid', function() {
-				_this.orderForm = vtexjs.checkout.orderForm;
-				if (_this.validateOperations(_this.orderForm)) {
-					try {
-						_this.validate();
-					} catch(e) {
-						console.error(e)
-					} 
-				} 
-			});
-
-		} catch(e) {
-			console.error(`Error on checkEmailAuthConflict: ${e}`)
-		}
-		
-	}
+    try {
+      $(document).ajaxComplete(function () {
+        if (_this.checkPaymentStep()) {
+          _this.showModal(b2bCheckoutSettings);
+        }
+      });
+    } catch (e) {
+      console.error(`Error on validating url: ${e}`);
+    }
+  }
 }
 
-
-window.validateAuthEmail = new checkEmailAuthConflict()
-validateAuthEmail.init(); 
+$(window).on("orderFormUpdated.vtex", function (evt, orderForm) {
+  window.validateAuthEmail = new checkEmailAuthConflict();
+  if (typeof b2bCheckoutSettings !== "undefined") {
+    validateAuthEmail.init();
+  }
+});
