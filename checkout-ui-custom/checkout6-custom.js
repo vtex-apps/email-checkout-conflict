@@ -1,3 +1,9 @@
+window.customPaymentMethod = {
+	bill_to_district_new_po: "I already have a new Purchase Order in place to cover this purchase.",
+	bill_to_dristrict_requisitioned: "I have a new Purchase Order to cover this purchase",
+	bill_to_district_blanket: "I wish to use a Blank Purchase Order already on file at Cosmo Music"
+}
+
 class checkEmailAuthConflict {
   static dataRendered = false;
   constructor() {
@@ -5,51 +11,46 @@ class checkEmailAuthConflict {
   }
 
   showModal() {
-    const addressInfo = b2bCheckoutSettings.addresses;
-    const formattedAddress = `
-		${addressInfo[0].receiverName}
-		${addressInfo[0].number ? addressInfo[0].number + " " : ""}${addressInfo[0].street}
-		${addressInfo[0].complement ? addressInfo[0].complement + " " : ""}
-		${addressInfo[0].neighborhood ? addressInfo[0].neighborhood + " - " : ""}${
-		addressInfo[0].city
-		}
-		${addressInfo[0].state} ${addressInfo[0].postalCode}
-		${addressInfo[0].country}
-	`;
+    const districtInfo = b2bCheckoutSettings;
+	const schoolDistrict = districtInfo.customFields.find(field => field.name === "School District").value;
+	const schoolDistrictAddress = districtInfo.customFields.find(field => field.name === "School District Address").value;
 
     const form = `
-		<form>
-		  <div>
+	<form>
+		<div>
 			<label>
-			  <input type="radio" name="parent" value="option1" checked> ${formattedAddress}
+				<input type="radio" name="parent" value="bill_to_district" checked>
+				Purchase Order from ${schoolDistrict}</br>${schoolDistrictAddress}
 			</label>
 			<div>
-			  <label>
-				Dropdown 1:
-				<select name="dropdown1">
-				  <option value="optionA">Option A</option>
-				  <option value="optionB">Option B</option>
-				  <option value="optionC">Option C</option>
-				</select>
-			  </label>
-			  <input type="text" name="text1">
+				<input type="radio" name="bill_to_district_new_po" value="bill_to_district_new_po">
+				${customPaymentMethod.bill_to_district_new_po}
+				</input>
+				<br>
+				<input type="radio" name="parent" value="option1">
+				${customPaymentMethod.bill_to_dristrict_requisitioned}
+				</input>
+				<br>
+				<input type="radio" name="parent" value="option1">
+				${customPaymentMethod.bill_to_district_blanket}
+				</input> 
+				<br>
+				<input type="text" placeholder="Enter PO Number or Comments" name="bill_to_district_comments">
+				</input>
 			</div>
 			<label>
-			  <input type="radio" name="parent" value="option2"> Option 2
+				<input type="radio" name="parent" value="option2">
+				Invoice the School Directly
 			</label>
 			<div>
-			  <label>
-				Dropdown 2:
-				<select name="dropdown2">
-				  <option value="optionX">Option X</option>
-				  <option value="optionY">Option Y</option>
-				  <option value="optionZ">Option Z</option>
-				</select>
-			  </label>
-			  <input type="text" name="text2">
+				<p>Upon shipment, an invoice will be mailed/emailed to your school admin. Payment is due within 30 days. (i.e. school cheque, parent council cheque, etc.)</p>
+				<p>Please indicate the member of your school admin team that has authorized the order and that will be handling payment:</p>
+				<input type="text" placeholder="Name" name="text2">
 			</div>
-		  </div>
-		</form>
+		</div>
+	</form>
+
+  
 	  `;
 
     if (!checkEmailAuthConflict.dataRendered) {
