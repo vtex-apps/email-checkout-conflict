@@ -4,7 +4,7 @@ window.customPaymentMethod = {
 	bill_to_district_blanket: "I wish to use a Blank Purchase Order already on file at Cosmo Music"
 }
 
-class checkEmailAuthConflict {
+class paymentCheckoutExt {
   static dataRendered = false;
   constructor() {
     this.orderForm = "";
@@ -19,19 +19,19 @@ class checkEmailAuthConflict {
 	<form>
 		<div>
 			<label>
-				<input type="radio" name="parent" value="bill_to_district" checked>
+				<input type="radio" name="bill_to_dristrict" value="bill_to_district" checked>
 				Purchase Order from ${schoolDistrict}</br>${schoolDistrictAddress}
 			</label>
-			<div>
+			<div class="bill-to-district-group">
 				<input type="radio" name="bill_to_district_new_po" value="bill_to_district_new_po">
 				${customPaymentMethod.bill_to_district_new_po}
 				</input>
 				<br>
-				<input type="radio" name="parent" value="option1">
+				<input type="radio" name="bill_to_district_requisitioned" value="bill_to_district_requisitioned">
 				${customPaymentMethod.bill_to_dristrict_requisitioned}
 				</input>
 				<br>
-				<input type="radio" name="parent" value="option1">
+				<input type="radio" name="bill_to_district_blanket" value="bill_to_district_blanket">
 				${customPaymentMethod.bill_to_district_blanket}
 				</input> 
 				<br>
@@ -39,13 +39,13 @@ class checkEmailAuthConflict {
 				</input>
 			</div>
 			<label>
-				<input type="radio" name="parent" value="option2">
+				<input type="radio" name="invoice_school" value="invoice_school">
 				Invoice the School Directly
 			</label>
-			<div>
+			<div class="invoice-school" >
 				<p>Upon shipment, an invoice will be mailed/emailed to your school admin. Payment is due within 30 days. (i.e. school cheque, parent council cheque, etc.)</p>
 				<p>Please indicate the member of your school admin team that has authorized the order and that will be handling payment:</p>
-				<input type="text" placeholder="Name" name="text2">
+				<input type="text" placeholder="Name" name="invoice_school_admin">
 			</div>
 		</div>
 	</form>
@@ -53,9 +53,9 @@ class checkEmailAuthConflict {
   
 	  `;
 
-    if (!checkEmailAuthConflict.dataRendered) {
+    if (!paymentCheckoutExt.dataRendered) {
       $(".v-custom-payment-item-wrap.active").append(form);
-      checkEmailAuthConflict.dataRendered = true;
+      paymentCheckoutExt.dataRendered = true;
     }
   }
 
@@ -79,8 +79,8 @@ class checkEmailAuthConflict {
 }
 
 $(window).on("orderFormUpdated.vtex", function (evt, orderForm) {
-  window.validateAuthEmail = new checkEmailAuthConflict();
+  window.customCheckoutValidation = new paymentCheckoutExt();
   if (typeof b2bCheckoutSettings !== "undefined") {
-    validateAuthEmail.init();
+    customCheckoutValidation.init();
   }
 });
