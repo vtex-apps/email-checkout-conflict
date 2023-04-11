@@ -10,7 +10,7 @@ class paymentCheckoutExt {
     this.orderForm = "";
   }
 
-  showModal() {
+  showPaymentContent() {
     const districtInfo = b2bCheckoutSettings;
 	const schoolDistrict = districtInfo.customFields.find(field => field.name === "School District").value;
 	const schoolDistrictAddress = districtInfo.customFields.find(field => field.name === "School District Address").value;
@@ -49,9 +49,7 @@ class paymentCheckoutExt {
 			</div>
 		</div>
 	</form>
-
-  
-	  `;
+	`;
 
     if (!paymentCheckoutExt.dataRendered) {
       $(".v-custom-payment-item-wrap.active").append(form);
@@ -69,7 +67,7 @@ class paymentCheckoutExt {
     try {
       $(document).ajaxComplete(function () {
         if (_this.checkPaymentStep()) {
-          _this.showModal(b2bCheckoutSettings);
+          _this.showPaymentContent(b2bCheckoutSettings);
         }
       });
     } catch (e) {
