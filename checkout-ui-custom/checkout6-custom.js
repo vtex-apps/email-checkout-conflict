@@ -1,23 +1,65 @@
 window.customPaymentMethod = {
-	bill_to_district_new_po: "I already have a new Purchase Order in place to cover this purchase.",
-	bill_to_dristrict_requisitioned: "I have a new Purchase Order to cover this purchase",
-	bill_to_district_blanket: "I wish to use a Blank Purchase Order already on file at Cosmo Music"
-}
+  bill_to_district_new_po:
+    "I already have a new Purchase Order in place to cover this purchase.",
+  bill_to_dristrict_requisitioned:
+    "I have a new Purchase Order to cover this purchase",
+  bill_to_district_blanket:
+    "I wish to use a Blank Purchase Order already on file at Cosmo Music",
+};
 
 class paymentCheckoutExt {
-  static dataRendered = false;
+  dataRendered = false;
+  settingsFetched = false;
+
   constructor() {
     this.orderForm = "";
   }
 
-  showPaymentContent() {
-    const districtInfo = b2bCheckoutSettings;
-	const schoolDistrict = districtInfo.customFields.find(field => field.name === "School District").value;
-	const schoolDistrictAddress = districtInfo.customFields.find(field => field.name === "School District Address").value;
+  // Used to remove cache from requests
+  isWorkspace = function () {
+    return window.__RUNTIME__.workspace !== "master";
+  };
+
+  getApp = () => {
+    if (this.settingsFetched) {
+      return;
+    }
+
+    const rootPath =
+      window.vtex.renderRuntime.rootPath !== undefined
+        ? window.vtex.renderRuntime.rootPath
+        : "";
+
+    const ts = new Date().getTime();
+
+    $.ajax({
+      url: `${rootPath}/_v/private/cosmo-b2b-checkout-extension/${
+        this.isWorkspace() ? `?v=${ts}` : ""
+      }`,
+    }).then(function (response) {
+        return () => {
+			console.log(response)
+		};
+    });
+
+    this.settingsFetched = true;
+  };
+
+  showPaymentContent(checkoutContent) {
+	if(this.dataRendered) {
+		return;
+	}
+
+    const districtInfo = checkoutContent;
+    const schoolDistrict = districtInfo.customFields.find(
+      (field) => field.name === "School District"
+    ).value;
+    const schoolDistrictAddress = districtInfo.customFields.find(
+      (field) => field.name === "School District Address"
+    ).value;
 
     const form = `
-	<form>
-		<div>
+		<div id="custom-payment-info-container">
 			<label>
 				<input type="radio" name="bill_to_dristrict" value="bill_to_district" checked>
 				Purchase Order from ${schoolDistrict}</br>${schoolDistrictAddress}
@@ -48,12 +90,11 @@ class paymentCheckoutExt {
 				<input type="text" placeholder="Name" name="invoice_school_admin">
 			</div>
 		</div>
-	</form>
 	`;
 
     if (!paymentCheckoutExt.dataRendered) {
       $(".v-custom-payment-item-wrap.active").append(form);
-      paymentCheckoutExt.dataRendered = true;
+      this.dataRendered = true;
     }
   }
 
@@ -67,7 +108,8 @@ class paymentCheckoutExt {
     try {
       $(document).ajaxComplete(function () {
         if (_this.checkPaymentStep()) {
-          _this.showPaymentContent(b2bCheckoutSettings);
+			_this.showPaymentContent(b2bCheckoutSettings);
+			_this.getApp();
         }
       });
     } catch (e) {
@@ -77,8 +119,8 @@ class paymentCheckoutExt {
 }
 
 $(window).on("orderFormUpdated.vtex", function (evt, orderForm) {
-  window.customCheckoutValidation = new paymentCheckoutExt();
   if (typeof b2bCheckoutSettings !== "undefined") {
+    window.customCheckoutValidation = new paymentCheckoutExt();
     customCheckoutValidation.init();
   }
 });
