@@ -38,7 +38,7 @@ export default {
       ) {
         checkoutConfig.apps.push({
           major: 1,
-          id: "b2b-payment-extension",
+          id: "cosmo-b2b-payment-extension",
           fields: [
             "bill_to_type", 
             "bill_to_option", 
