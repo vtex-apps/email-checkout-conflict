@@ -20,36 +20,115 @@ class paymentCheckoutExt {
     return window.__RUNTIME__.workspace !== "master";
   };
 
-  getApp = () => {
-    if (this.settingsFetched) {
-      return;
-    }
+  detectChanges() {
+    const container = document.getElementById("custom-payment-info-container");
+    const billToDistrictRadio = container.querySelector(
+      'input[name="bill_to_dristrict"]'
+    );
+    const invoiceSchoolRadio = container.querySelector(
+      'input[name="invoice_school"]'
+    );
+    const invoiceSchoolInput = container.querySelector(
+      'input[name="invoice_school_admin"]'
+    );
+    const billToDistrictNewPORadio = container.querySelector(
+      'input[name="bill_to_district_new_po"]'
+    );
+    const billToDistrictRequisitionedRadio = container.querySelector(
+      'input[name="bill_to_district_requisitioned"]'
+    );
+    const billToDistrictBlanketRadio = container.querySelector(
+      'input[name="bill_to_district_blanket"]'
+    );
+    const poCommentsInput = container.querySelector(
+      'input[name="bill_to_district_comments"]'
+    );
 
-    const rootPath =
-      window.vtex.renderRuntime.rootPath !== undefined
-        ? window.vtex.renderRuntime.rootPath
-        : "";
+    const updateOrderFormCustomData = (path, value) => {
+      const orderFormID = window.vtexjs.checkout.orderFormId;
 
-    const ts = new Date().getTime();
+      $.ajax({
+        url: `${window.location.origin}/api/checkout/pub/orderForm/${orderFormID}/customData/cosmo-b2b-payment-extension/${path}`,
+        type: "PUT",
+        data: { value },
+      });
+    };
 
-    $.ajax({
-      url: `${rootPath}/_v/private/cosmo-b2b-checkout-extension/${
-        this.isWorkspace() ? `?v=${ts}` : ""
-      }`,
-    }).then(function (response) {
-        return () => {
-			console.log(response)
-		};
+    billToDistrictRadio.addEventListener("change", () => {
+      if (billToDistrictRadio.checked) {
+        invoiceSchoolRadio.checked = false;
+        invoiceSchoolInput.value = "";
+        invoiceSchoolInput.disabled = true;
+        poCommentsInput.disabled = false;
+
+        updateOrderFormCustomData("bill_to_type", billToDistrictRadio.value);
+      }
     });
 
-    this.settingsFetched = true;
-  };
+    invoiceSchoolInput.addEventListener("change", (e) => {
+      updateOrderFormCustomData("bill_to_text", e.target.value);
+    });
+
+    poCommentsInput.addEventListener("change", (e) => {
+      updateOrderFormCustomData("bill_to_text", e.target.value);
+    });
+
+    invoiceSchoolRadio.addEventListener("change", () => {
+      if (invoiceSchoolRadio.checked) {
+        billToDistrictRadio.checked = false;
+        billToDistrictNewPORadio.checked = false;
+        billToDistrictRequisitionedRadio.checked = false;
+        billToDistrictBlanketRadio.checked = false;
+        poCommentsInput.disabled = true;
+		invoiceSchoolInput.disabled = false;
+        poCommentsInput.value = "";
+
+        updateOrderFormCustomData("bill_to_type", invoiceSchoolRadio.value);
+        updateOrderFormCustomData("bill_to_option", "null");
+      }
+    });
+
+    billToDistrictNewPORadio.addEventListener("change", (e) => {
+      if (billToDistrictNewPORadio.checked) {
+        poCommentsInput.disabled = false;
+        billToDistrictRequisitionedRadio.checked = false;
+        billToDistrictBlanketRadio.checked = false;
+
+        updateOrderFormCustomData(
+          "bill_to_option",
+          billToDistrictNewPORadio.value
+        );
+      }
+    });
+
+    billToDistrictRequisitionedRadio.addEventListener("change", (e) => {
+      if (billToDistrictRequisitionedRadio.checked) {
+        poCommentsInput.disabled = false;
+        billToDistrictNewPORadio.checked = false;
+        billToDistrictBlanketRadio.checked = false;
+
+        updateOrderFormCustomData(
+          "bill_to_option",
+          billToDistrictRequisitionedRadio.value
+        );
+      }
+    });
+
+    billToDistrictBlanketRadio.addEventListener("change", (e) => {
+      if (billToDistrictBlanketRadio.checked) {
+        poCommentsInput.disabled = false;
+        billToDistrictNewPORadio.checked = false;
+        billToDistrictRequisitionedRadio.checked = false;
+
+        updateOrderFormCustomData(
+          "bill_to_option",
+          billToDistrictBlanketRadio.value
+        );
+      }
+    });
+  }
 
   showPaymentContent(checkoutContent) {
-	if(this.dataRendered) {
-		return;
-	}
-
     const districtInfo = checkoutContent;
     const schoolDistrict = districtInfo.customFields.find(
       (field) => field.name === "School District"
@@ -58,10 +137,10 @@ class paymentCheckoutExt {
       (field) => field.name === "School District Address"
     ).value;
 
-    const form = `
+    const paymentInfo = `
 		<div id="custom-payment-info-container">
 			<label>
-				<input type="radio" name="bill_to_dristrict" value="bill_to_district" checked>
+				<input type="radio" name="bill_to_dristrict" value="bill_to_district" >
 				Purchase Order from ${schoolDistrict}</br>${schoolDistrictAddress}
 			</label>
 			<div class="bill-to-district-group">
@@ -92,9 +171,13 @@ class paymentCheckoutExt {
 		</div>
 	`;
 
-    if (!paymentCheckoutExt.dataRendered) {
-      $(".v-custom-payment-item-wrap.active").append(form);
+    if (!this.dataRendered) {
+      $(".v-custom-payment-item-wrap.active").append(paymentInfo);
       this.dataRendered = true;
+      const container = document.getElementById(
+        "custom-payment-info-container"
+      );
+      container.addEventListener("change", this.detectChanges());
     }
   }
 
@@ -107,9 +190,11 @@ class paymentCheckoutExt {
 
     try {
       $(document).ajaxComplete(function () {
-        if (_this.checkPaymentStep()) {
-			_this.showPaymentContent(b2bCheckoutSettings);
-			_this.getApp();
+		const canBillDistrict = b2bCheckoutSettings.customFields.find(
+      (field) => field.name === "Can Bill District"
+    ).value;
+        if (_this.checkPaymentStep() && !_this.dataRendered ) {
+          _this.showPaymentContent(b2bCheckoutSettings);
         }
       });
     } catch (e) {
