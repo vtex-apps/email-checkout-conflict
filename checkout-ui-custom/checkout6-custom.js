@@ -1,148 +1,231 @@
-window.checkEmailAuthConflictMessages = {
+window.customPaymentMethod = {
+  bill_to_district_new_po:
+    "I already have a new Purchase Order in place to cover this purchase.",
+  bill_to_dristrict_requisitioned:
+    "I have a new Purchase Order to cover this purchase",
+  bill_to_district_blanket:
+    "I wish to use a Blank Purchase Order already on file at Cosmo Music",
+};
 
-	en: {
-		title:"Emails conflict",
-		button:"Login",
-		message:"We have identified that you probably used a different login email than the one you entered previously. Please log in again by clicking the button below."
-	},
-	es: {
-		title:"Conflicto de correos electrónicos",
-		button:"Ingressar",
-		message:"Hemos identificado que probablemente utilizó una dirección de correo electrónico de inicio de sesión diferente a la que ingresó anteriormente. Vuelva a iniciar sesión haciendo clic en el botón de abajo."
-	},
-	ro: {
-		title:"Conflict adresa email",
-		button:"Loghează-te",
-		message:"Am identificat că probabil ați folosit un alt e-mail de conectare decât cel introdus anterior. Vă rugăm să vă conectați din nou făcând clic pe butonul de mai jos."
-	}
-}
+class paymentCheckoutExt {
+  dataRendered = false;
+  settingsFetched = false;
+
+  constructor() {
+    this.orderForm = "";
+  }
+
+  // Used to remove cache from requests
+  isWorkspace = function () {
+    return window.__RUNTIME__.workspace !== "master";
+  };
+
+  detectChanges() {
+    const container = document.getElementById("custom-payment-info-container");
+    const billToDistrictRadio = container.querySelector(
+      'input[name="bill_to_dristrict"]'
+    );
+    const invoiceSchoolRadio = container.querySelector(
+      'input[name="invoice_school"]'
+    );
+    const invoiceSchoolInput = container.querySelector(
+      'input[name="invoice_school_admin"]'
+    );
+    const billToDistrictNewPORadio = container.querySelector(
+      'input[name="bill_to_district_new_po"]'
+    );
+    const billToDistrictRequisitionedRadio = container.querySelector(
+      'input[name="bill_to_district_requisitioned"]'
+    );
+    const billToDistrictBlanketRadio = container.querySelector(
+      'input[name="bill_to_district_blanket"]'
+    );
+    const poCommentsInput = container.querySelector(
+      'input[name="bill_to_district_comments"]'
+    );
+
+    const updateOrderFormCustomData = (path, value) => {
+      const orderFormID = window.vtexjs.checkout.orderFormId;
+
+      $.ajax({
+        url: `${window.location.origin}/api/checkout/pub/orderForm/${orderFormID}/customData/cosmo-b2b-payment-extension/${path}`,
+        type: "PUT",
+        data: { value },
+      });
+    };
+
+    billToDistrictRadio.addEventListener("change", () => {
+      if (billToDistrictRadio.checked) {
+        invoiceSchoolRadio.checked = false;
+        invoiceSchoolInput.value = "";
+        invoiceSchoolInput.disabled = true;
+        poCommentsInput.disabled = false;
+
+        updateOrderFormCustomData("bill_to_type", billToDistrictRadio.value);
+      }
+    });
+
+    invoiceSchoolInput.addEventListener("change", (e) => {
+      updateOrderFormCustomData("bill_to_text", e.target.value);
+    });
+
+    poCommentsInput.addEventListener("change", (e) => {
+      updateOrderFormCustomData("bill_to_text", e.target.value);
+    });
+
+    invoiceSchoolRadio.addEventListener("change", () => {
+      if (invoiceSchoolRadio.checked) {
+        billToDistrictRadio.checked = false;
+        billToDistrictNewPORadio.checked = false;
+        billToDistrictRequisitionedRadio.checked = false;
+        billToDistrictBlanketRadio.checked = false;
+        poCommentsInput.disabled = true;
+		invoiceSchoolInput.disabled = false;
+        poCommentsInput.value = "";
+
+        updateOrderFormCustomData("bill_to_type", invoiceSchoolRadio.value);
+        updateOrderFormCustomData("bill_to_option", "null");
+      }
+    });
+
+    billToDistrictNewPORadio.addEventListener("change", (e) => {
+      if (billToDistrictNewPORadio.checked) {
+        poCommentsInput.disabled = false;
+        billToDistrictRequisitionedRadio.checked = false;
+        billToDistrictBlanketRadio.checked = false;
+		billToDistrictRadio.checked = true;
+		invoiceSchoolRadio.checked = false;
+		invoiceSchoolInput.disabled = true;
+		invoiceSchoolInput.value = "";
 
 
-class checkEmailAuthConflict {
-	constructor({} = {}) {
-		this.orderForm = "";
-    this.lang = "";
-	}
+        updateOrderFormCustomData(
+          "bill_to_option",
+          billToDistrictNewPORadio.value
+        );
+      }
+    });
 
-	removeModal() {
-		$(".checkEmailAuthConflict__modal").fadeOut("normal", function() {
-			$(".checkEmailAuthConflict__modal").remove();
-		});
-	} 
+    billToDistrictRequisitionedRadio.addEventListener("change", (e) => {
+      if (billToDistrictRequisitionedRadio.checked) {
+        poCommentsInput.disabled = false;
+        billToDistrictNewPORadio.checked = false;
+        billToDistrictBlanketRadio.checked = false;
+		billToDistrictRadio.checked = true;
+		invoiceSchoolRadio.checked = false;
+		invoiceSchoolInput.disabled = true;
+		invoiceSchoolInput.value = "";
 
-	showModal() {
+        updateOrderFormCustomData(
+          "bill_to_option",
+          billToDistrictRequisitionedRadio.value
+        );
+      }
+    });
 
-		const _this = this;
+    billToDistrictBlanketRadio.addEventListener("change", (e) => {
+      if (billToDistrictBlanketRadio.checked) {
+        poCommentsInput.disabled = false;
+        billToDistrictNewPORadio.checked = false;
+        billToDistrictRequisitionedRadio.checked = false;
+		billToDistrictRadio.checked = true;
+		invoiceSchoolRadio.checked = false;
+		invoiceSchoolInput.disabled = true;
+		invoiceSchoolInput.value = "";
 
-		$(".checkEmailAuthConflict__modal").remove();
+        updateOrderFormCustomData(
+          "bill_to_option",
+          billToDistrictBlanketRadio.value
+        );
+      }
+    });
+  }
 
-		if(!_this.lang) return false;
-		if(!checkEmailAuthConflictMessages[this.lang]) this.lang = "en";
-		let modal = `
-			<div class="checkEmailAuthConflict__modal">
-				<div class="checkEmailAuthConflict__modal--bg"></div>
-				<div class="checkEmailAuthConflict__modal--wrap">
-					<h4 class="checkEmailAuthConflict__modal--title">${checkEmailAuthConflictMessages[this.lang].title}</h4>
-					<p class="checkEmailAuthConflict__modal--text">${checkEmailAuthConflictMessages[this.lang].message}</p>
-					<button class="checkEmailAuthConflict__modal--button js-checkEmailAuthConflict__modal--button">${checkEmailAuthConflictMessages[this.lang].button}</button>
-				</div>
+  showPaymentContent(checkoutContent) {
+    const districtInfo = checkoutContent;
+    const schoolDistrict = districtInfo.customFields.find(
+      (field) => field.name === "School District"
+    ).value;
+    const schoolDistrictAddress = districtInfo.customFields.find(
+      (field) => field.name === "School District Address"
+    ).value;
+
+    const paymentInfo = `
+		<div id="custom-payment-info-container">
+			<label>
+				<input type="radio" name="bill_to_dristrict" value="bill_to_district" >
+				Purchase Order from ${schoolDistrict}</br>${schoolDistrictAddress}
+			</label>
+			<div class="bill-to-district-group">
+				<input type="radio" name="bill_to_district_new_po" value="bill_to_district_new_po">
+				${customPaymentMethod.bill_to_district_new_po}
+				</input>
+				<br>
+				<input type="radio" name="bill_to_district_requisitioned" value="bill_to_district_requisitioned">
+				${customPaymentMethod.bill_to_dristrict_requisitioned}
+				</input>
+				<br>
+				<input type="radio" name="bill_to_district_blanket" value="bill_to_district_blanket">
+				${customPaymentMethod.bill_to_district_blanket}
+				</input> 
+				<br>
+				<input type="text" placeholder="Enter PO Number or Comments" name="bill_to_district_comments">
+				</input>
 			</div>
-		`;
+			<label>
+				<input type="radio" name="invoice_school" value="invoice_school">
+				Invoice the School Directly
+			</label>
+			<div class="invoice-school" >
+				<p>Upon shipment, an invoice will be mailed/emailed to your school admin. Payment is due within 30 days. (i.e. school cheque, parent council cheque, etc.)</p>
+				<p>Please indicate the member of your school admin team that has authorized the order and that will be handling payment:</p>
+				<input type="text" placeholder="Name" name="invoice_school_admin">
+			</div>
+		</div>
+	`;
 
-		$("body").append(modal);
+    if (!this.dataRendered) {
+      $(".box-step-content .steps-view").append(paymentInfo);
+      this.dataRendered = true;
+      const container = document.getElementById(
+        "custom-payment-info-container"
+      );
+      container.addEventListener("change", this.detectChanges());
+    }
+  }
 
-	}
+  checkPaymentStep() {
+    return window.location.hash === "#/payment";
+  }
 
-	bind() {
-		const _this = this;
+  init() {
+    const _this = this;
 
-		$("body").on("click", ".js-checkEmailAuthConflict__modal--button", function(e) {
-			e.preventDefault();
-			$(this).addClass("js-loading");
-			_this.changeUser();
-		})
-
-	}
-
-	changeUser() {
-		const _this = this;
-
-		$.ajax(`/checkout/changeToAnonymousUser/${_this.orderForm.orderFormId}`)
-		.done(function() {
-			_this.removeModal();
-			vtexid.start();
-		});
-	}
-
-	validate() {
-		const _this = this;
-		try {
-			if( 
-				_this.orderForm && 
-				_this.orderForm.clientProfileData && 
-				_this.orderForm.clientProfileData.email 
-			) {
-				fetch('/api/vtexid/pub/authenticated/user', {credentials: 'include'})
-				.then(response => response.json())
-				.then(function(response) {
-					if(!response) return false;
-					let user = response.user;
-
-					if(_this.orderForm.clientProfileData.email != user) {
-						_this.showModal();
-					}
-				})
-			}
-		} catch(e) {
-			console.error(e)
-		} 
-	}
-
-	validateOperations(orderForm) {
-		if (orderForm.userType === 'callCenterOperator' || ~window.location.host.indexOf(`myvtex`)) {
-			return false
-		}
-		return true
-	}
-
-	init() {
-		const _this = this;
-
-		try {
-
-			$(window).one('orderFormUpdated.vtex', function(_, orderForm) {
-				if (_this.validateOperations(orderForm)) {
-	
-					_this.orderForm = orderForm;
-					_this.lang = vtex ? vtex.i18n.locale : "en";
-					try {
-						_this.validate();
-						_this.bind();
-					} catch(e) {
-						console.error(e)
-					} 
-				}
-	
-			});
-	
-			$(window).on('authenticatedUser.vtexid closed.vtexid', function() {
-				_this.orderForm = vtexjs.checkout.orderForm;
-				if (_this.validateOperations(_this.orderForm)) {
-					try {
-						_this.validate();
-					} catch(e) {
-						console.error(e)
-					} 
-				} 
-			});
-
-		} catch(e) {
-			console.error(`Error on checkEmailAuthConflict: ${e}`)
-		}
-		
-	}
+	$(document).ajaxComplete(function () {
+      try {
+        const canBillDistrict = b2bCheckoutSettings.customFields.find(
+          (field) => field.name === "Can Bill District"
+        ).value;
+        if (_this.checkPaymentStep() && !_this.dataRendered) {
+          _this.showPaymentContent(b2bCheckoutSettings);
+        }
+      } catch (e) {
+        console.error(`Error on validating url: ${e}`);
+      }
+    });
+  }
 }
 
-
-window.validateAuthEmail = new checkEmailAuthConflict()
-validateAuthEmail.init(); 
+$(window).on("orderFormUpdated.vtex", function (evt, orderForm) {
+  if (!$("#payment-group-promissoryPaymentGroup").hasClass("active")) {
+    $("#custom-payment-info-container").hide();
+  } else if (
+    typeof b2bCheckoutSettings !== "undefined" &&
+    !window.customCheckoutValidation
+  ) {
+    window.customCheckoutValidation = new paymentCheckoutExt();
+    customCheckoutValidation.init();
+  } else {
+	$("#custom-payment-info-container").show();	
+  }
+});

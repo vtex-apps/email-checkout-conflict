@@ -1,16 +1,36 @@
 {
-  "name": "email-checkout-conflict",
-  "vendor": "vtex",
-  "version": "0.1.5",
-  "title": "Emails conflicts in checkout",
-  "description": "Compares identified user with the email used to login",
+  "name": "b2b-payment-extension",
+  "vendor": "cosmo",
+  "version": "0.0.0",
+  "title": "Payment method extension",
+  "description": "Request additional data in a specified payment method",
   "builders": {
     "docs": "0.x",
-    "checkout-ui-custom": "0.x"
+    "checkout-ui-custom": "0.x",
+    "node": "6.x"
   },
   "scripts": {
     "prereleasy": "bash lint.sh"
   },
   "credentialType": "absolute",
+  "policies": [
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "portal.vtexcommercestable.com.br",
+        "path": "/api/*"
+      }
+    },
+    {
+      "name": "SaveOrderFormConfiguration"
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "portal.vtexcommercestable.com.br",
+        "path": "/api/checkout/pvt/configuration/orderForm"
+      }
+    }
+  ],
   "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
 }
