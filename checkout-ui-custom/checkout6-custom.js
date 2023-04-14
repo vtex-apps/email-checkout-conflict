@@ -189,10 +189,10 @@ class paymentCheckoutExt {
     const _this = this;
 
     try {
-      $(document).ajaxComplete(function () {
+		$(document).ajaxComplete(function () {
+		console.log(b2bCheckoutSettings)
 		const canBillDistrict = b2bCheckoutSettings.customFields.find(
-      (field) => field.name === "Can Bill District"
-    ).value;
+			(field) => field.name === "Can Bill District").value;
         if (_this.checkPaymentStep() && !_this.dataRendered ) {
           _this.showPaymentContent(b2bCheckoutSettings);
         }
@@ -204,8 +204,15 @@ class paymentCheckoutExt {
 }
 
 $(window).on("orderFormUpdated.vtex", function (evt, orderForm) {
-  if (typeof b2bCheckoutSettings !== "undefined") {
+  if (!$("#payment-group-promissoryPaymentGroup").parent().hasClass("active")) {
+    $("#custom-payment-info-container").hide();
+  } else if (
+    typeof b2bCheckoutSettings !== "undefined" &&
+    !window.customCheckoutValidation
+  ) {
     window.customCheckoutValidation = new paymentCheckoutExt();
     customCheckoutValidation.init();
+  } else {
+	$("#custom-payment-info-container").show();	
   }
 });
