@@ -93,6 +93,11 @@ class paymentCheckoutExt {
         poCommentsInput.disabled = false;
         billToDistrictRequisitionedRadio.checked = false;
         billToDistrictBlanketRadio.checked = false;
+		billToDistrictRadio.checked = true;
+		invoiceSchoolRadio.checked = false;
+		invoiceSchoolInput.disabled = true;
+		invoiceSchoolInput.value = "";
+
 
         updateOrderFormCustomData(
           "bill_to_option",
@@ -106,6 +111,10 @@ class paymentCheckoutExt {
         poCommentsInput.disabled = false;
         billToDistrictNewPORadio.checked = false;
         billToDistrictBlanketRadio.checked = false;
+		billToDistrictRadio.checked = true;
+		invoiceSchoolRadio.checked = false;
+		invoiceSchoolInput.disabled = true;
+		invoiceSchoolInput.value = "";
 
         updateOrderFormCustomData(
           "bill_to_option",
@@ -119,6 +128,10 @@ class paymentCheckoutExt {
         poCommentsInput.disabled = false;
         billToDistrictNewPORadio.checked = false;
         billToDistrictRequisitionedRadio.checked = false;
+		billToDistrictRadio.checked = true;
+		invoiceSchoolRadio.checked = false;
+		invoiceSchoolInput.disabled = true;
+		invoiceSchoolInput.value = "";
 
         updateOrderFormCustomData(
           "bill_to_option",
