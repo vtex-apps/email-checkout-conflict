@@ -172,7 +172,7 @@ class paymentCheckoutExt {
 	`;
 
     if (!this.dataRendered) {
-      $(".v-custom-payment-item-wrap.active").append(paymentInfo);
+      $(".box-step-content .steps-view").append(paymentInfo);
       this.dataRendered = true;
       const container = document.getElementById(
         "custom-payment-info-container"
@@ -188,23 +188,23 @@ class paymentCheckoutExt {
   init() {
     const _this = this;
 
-    try {
-		$(document).ajaxComplete(function () {
-		console.log(b2bCheckoutSettings)
-		const canBillDistrict = b2bCheckoutSettings.customFields.find(
-			(field) => field.name === "Can Bill District").value;
-        if (_this.checkPaymentStep() && !_this.dataRendered ) {
+	$(document).ajaxComplete(function () {
+      try {
+        const canBillDistrict = b2bCheckoutSettings.customFields.find(
+          (field) => field.name === "Can Bill District"
+        ).value;
+        if (_this.checkPaymentStep() && !_this.dataRendered) {
           _this.showPaymentContent(b2bCheckoutSettings);
         }
-      });
-    } catch (e) {
-      console.error(`Error on validating url: ${e}`);
-    }
+      } catch (e) {
+        console.error(`Error on validating url: ${e}`);
+      }
+    });
   }
 }
 
 $(window).on("orderFormUpdated.vtex", function (evt, orderForm) {
-  if (!$("#payment-group-promissoryPaymentGroup").parent().hasClass("active")) {
+  if (!$("#payment-group-promissoryPaymentGroup").hasClass("active")) {
     $("#custom-payment-info-container").hide();
   } else if (
     typeof b2bCheckoutSettings !== "undefined" &&
