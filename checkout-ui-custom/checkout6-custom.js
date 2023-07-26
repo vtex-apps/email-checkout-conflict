@@ -76,13 +76,14 @@ class checkEmailAuthConflict {
 
 	validate() {
 		const _this = this;
+		const rootPath = __RUNTIME__.rootPath || (vtex && vtex.renderRuntime && vtex.renderRuntime.rootPath) || '';
 		try {
 			if( 
 				_this.orderForm && 
 				_this.orderForm.clientProfileData && 
 				_this.orderForm.clientProfileData.email 
 			) {
-				fetch('/api/vtexid/pub/authenticated/user', {credentials: 'include'})
+				fetch(rootPath + '/api/vtexid/pub/authenticated/user', {credentials: 'include'})
 				.then(response => response.json())
 				.then(function(response) {
 					if(!response) return false;
