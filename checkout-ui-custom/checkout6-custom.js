@@ -10,6 +10,11 @@ window.checkEmailAuthConflictMessages = {
 		button:"Ingressar",
 		message:"Hemos identificado que probablemente utilizó una dirección de correo electrónico de inicio de sesión diferente a la que ingresó anteriormente. Vuelva a iniciar sesión haciendo clic en el botón de abajo."
 	},
+    "pt-BR": {
+        title:"Conflito de e-mail",
+        button:"Login",
+        message:"Identificamos que você provavelmente usou um endereço de e-mail diferente do que você inseriu anteriormente. Por favor, faça o login novamente clicando no botão abaixo.",
+    },
 	ro: {
 		title:"Conflict adresa email",
 		button:"Loghează-te",
@@ -23,6 +28,13 @@ class checkEmailAuthConflict {
 		this.orderForm = "";
     this.lang = "";
 	}
+
+    getRootPath = () => {
+        const { rootPath } =
+          window.__RUNTIME__ || (window.vtex && window.vtex.renderRuntime) || {};
+    
+        return rootPath || "";
+    };
 
 	removeModal() {
 		$(".checkEmailAuthConflict__modal").fadeOut("normal", function() {
@@ -67,7 +79,7 @@ class checkEmailAuthConflict {
 	changeUser() {
 		const _this = this;
 
-		$.ajax(`/checkout/changeToAnonymousUser/${_this.orderForm.orderFormId}`)
+		$.ajax(`${this.getRootPath()}/checkout/changeToAnonymousUser/${_this.orderForm.orderFormId}`)
 		.done(function() {
 			_this.removeModal();
 			vtexid.start();
@@ -76,14 +88,13 @@ class checkEmailAuthConflict {
 
 	validate() {
 		const _this = this;
-		const rootPath = __RUNTIME__.rootPath || (vtex && vtex.renderRuntime && vtex.renderRuntime.rootPath) || '';
 		try {
 			if( 
 				_this.orderForm && 
 				_this.orderForm.clientProfileData && 
 				_this.orderForm.clientProfileData.email 
 			) {
-				fetch(rootPath + '/api/vtexid/pub/authenticated/user', {credentials: 'include'})
+				fetch(`${this.getRootPath()}/api/vtexid/pub/authenticated/user`, {credentials: 'include'})
 				.then(response => response.json())
 				.then(function(response) {
 					if(!response) return false;
