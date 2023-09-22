@@ -107,7 +107,7 @@ class checkEmailAuthConflict {
         _this.orderForm.clientProfileData &&
         _this.orderForm.clientProfileData.email
       ) {
-        fetch(_this.getRootPath() + "/api/vtexid/pub/authenticated/user", {
+        fetch(`${_this.getRootPath()}/api/vtexid/pub/authenticated/user`, {
           credentials: "include",
         })
           .then((response) => response.json())
