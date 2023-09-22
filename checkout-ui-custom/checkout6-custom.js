@@ -11,6 +11,12 @@ window.checkEmailAuthConflictMessages = {
     message:
       "Hemos identificado que probablemente utilizó una dirección de correo electrónico de inicio de sesión diferente a la que ingresó anteriormente. Vuelva a iniciar sesión haciendo clic en el botón de abajo.",
   },
+  "pt-BR": {
+    title: "Conflito de e-mail",
+    button: "Login",
+    message:
+      "Identificamos que você provavelmente usou um endereço de e-mail diferente do que você inseriu anteriormente. Por favor, faça o login novamente clicando no botão abaixo.",
+  },
   ro: {
     title: "Conflict adresa email",
     button: "Loghează-te",
