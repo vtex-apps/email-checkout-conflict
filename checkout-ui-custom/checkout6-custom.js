@@ -11,9 +11,9 @@ window.checkEmailAuthConflictMessages = {
 		message: "Parece que el email que has ingresado es diferente del que se registró anteriormente. Por favor, inicia sesión de nuevo haciendo clic en el botón a continuación."
 	},
     "pt-BR": {
-        title:"Conflito de e-mail",
-        button:"Login",
-        message:"Identificamos que você provavelmente usou um endereço de e-mail diferente do que você inseriu anteriormente. Por favor, faça o login novamente clicando no botão abaixo.",
+		title: "Conflito de email",
+		button: "Entrar",
+		message: "Parece que o email que você inseriu é diferente do que foi registrado anteriormente. Faça login novamente clicando no botão abaixo."
     },
 	ro: {
 		title:"Conflict adresa email",
