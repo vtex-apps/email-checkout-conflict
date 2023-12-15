@@ -1,14 +1,14 @@
 window.checkEmailAuthConflictMessages = {
 
 	en: {
-		title:"Emails conflict",
-		button:"Login",
-		message:"We have identified that you probably used a different login email than the one you entered previously. Please log in again by clicking the button below."
+		title: "Email conflict",
+		button: "Log In",
+		message: "It looks like the email you entered is different from the one that was previously registered. Please log in again by clicking the button below."
 	},
 	es: {
-		title:"Conflicto de correos electrónicos",
-		button:"Ingressar",
-		message:"Hemos identificado que probablemente utilizó una dirección de correo electrónico de inicio de sesión diferente a la que ingresó anteriormente. Vuelva a iniciar sesión haciendo clic en el botón de abajo."
+		title: "Email no registrado ",
+		button: "Iniciar sesión",
+		message: "Parece que el email que has ingresado es diferente del que se registró anteriormente. Por favor, inicia sesión de nuevo haciendo clic en el botón a continuación."
 	},
     "pt-BR": {
         title:"Conflito de e-mail",
