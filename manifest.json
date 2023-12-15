@@ -1,7 +1,7 @@
 {
   "name": "email-checkout-conflict",
   "vendor": "vtex",
-  "version": "0.1.7",
+  "version": "0.2.0",
   "title": "Emails conflicts in checkout",
   "description": "Compares identified user with the email used to login",
   "builders": {
