@@ -19,6 +19,46 @@ window.checkEmailAuthConflictMessages = {
 		title:"Conflict adresa email",
 		button:"Loghează-te",
 		message:"Am identificat că probabil ați folosit un alt e-mail de conectare decât cel introdus anterior. Vă rugăm să vă conectați din nou făcând clic pe butonul de mai jos."
+	},
+	bg: {
+		title: "Конфликт на имейл адреси",
+		button: "Влизане",
+		message: "Изглежда, че въведеният от вас имейл е различен от този, който е бил регистриран преди това. Моля, влезте отново, като щракнете върху бутона по-долу."
+	},
+	de: {
+		title: "E-Mail-Konflikt",
+		button: "Einloggen",
+		message: "Es sieht so aus, als ob die eingegebene E-Mail sich von der unterscheidet, die zuvor registriert wurde. Bitte melden Sie sich erneut an, indem Sie auf den Button unten klicken."
+	},
+	fr: {
+		title: "Conflit d'e-mail",
+		button: "Se connecter",
+		message: "Il semble que l'e-mail que vous avez saisi soit différent de celui qui a été enregistré précédemment. Veuillez vous reconnecter en cliquant sur le bouton ci-dessous."
+	},
+	it: {
+		title: "Conflitto di email",
+		button: "Accedi",
+		message: "Sembra che l'email inserita sia diversa da quella registrata in precedenza. Accedi di nuovo cliccando sul pulsante in basso."
+	},
+	ja: {
+		title: "メールの不一致",
+		button: "ログイン",
+		message: "入力したメールアドレスが以前に登録したものと異なるようです。下のボタンをクリックし、もう一度ログインしてください。"
+	},
+	ko: {
+		title: "이메일 충돌",
+		button: "로그인",
+		message: "입력한 이메일이 이전에 등록한 이메일과 다른 것 같습니다. 아래 버튼을 클릭하여 다시 로그인하세요."
+	},
+	nl: {
+		title: "E-mailconflict",
+		button: "Inloggen",
+		message: "Het lijkt erop dat het e-mailadres dat u hebt ingevoerd anders is dan het e-mailadres dat u eerder hebt geregistreerd. Log opnieuw in door op onderstaande knop te klikken."
+	},
+	th: {
+		title: "อีเมลไม่ตรงกัน",
+		button: "ล็อกอิน",
+		message: "ดูเหมือนว่าอีเมลที่คุณให้ต่างจากที่ลงทะเบียนไว้ โปรดล็อกอินอีกครั้งโดยคลิกปุ่มที่ด้านล่าง"
 	}
 }
 
