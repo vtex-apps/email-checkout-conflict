@@ -59,6 +59,66 @@ window.checkEmailAuthConflictMessages = {
 		title: "อีเมลไม่ตรงกัน",
 		button: "ล็อกอิน",
 		message: "ดูเหมือนว่าอีเมลที่คุณให้ต่างจากที่ลงทะเบียนไว้ โปรดล็อกอินอีกครั้งโดยคลิกปุ่มที่ด้านล่าง"
+	},
+	ca: {
+		title: "Conflicte amb l'adreça electrònica",
+		button: "Inicia la sessió",
+		message: "Sembla que l'adreça electrònica que heu introduït és diferent de la que es va registrar anteriorment. Feu clic al botó de sota per tornar a iniciar la sessió."
+	},
+	cs: {
+		title: "Konflikt e-mailů",
+		button: "Přihlásit se",
+		message: "Vypadá to, že zadaný e-mail se liší od toho, který jste zaregistrovali dříve. Klikněte na tlačítko níže a přihlaste se znovu."
+	},
+	da: {
+		title: "E-mailkonflikt",
+		button: "Log ind",
+		message: "Det ser ud til, at den e-mail, du har indtastet, er anderledes end den, der tidligere blev registreret. Log venligst ind igen ved at klikke på knappen nedenfor."
+	},
+	fi: {
+		title: "Sähköpostiristiriita",
+		button: "Kirjaudu",
+		message: "Näyttää siltä, että syöttämäsi sähköpostiosoite on eri kuin aiemmin rekisteröity sähköpostiosoite. Kirjaudu uudelleen napsauttamalla alla olevaa painiketta."
+	},
+	id: {
+		title: "Konflik Email",
+		button: "Masuk",
+		message: "Tampaknya alamat email yang Anda masukkan berbeda dari yang sudah terdaftar sebelumnya. Silakan masuk kembali dengan mengklik tombol di bawah ini."
+	},
+	no: {
+		title: "E-postkonflikt",
+		button: "Logg inn",
+		message: "Det ser ut som om e-postadressen du skrev inn, er annerledes enn den som tidligere var registrert. Vennligst logg inn igjen ved å klikke på knappen nedenfor."
+	},
+	pl: {
+		title: "Konflikt e-mailowy",
+		button: "Zaloguj się",
+		message: "Wygląda na to, że wprowadzony e-mail jest inny niż poprzednio zarejestrowany. Zaloguj się ponownie, klikając poniższy przycisk."
+	},
+	ru: {
+		title: "Конфликт электронной почты",
+		button: "Вход",
+		message: "Похоже, введенная вами электронная почта отличается от зарегистрированной ранее. Повторите попытку входа, нажав кнопку ниже."
+	},
+	sk: {
+		title: "Konflikt e-mailov",
+		button: "Prihlásenie",
+		message: "Zdá sa, že e-mail, ktorý ste zadali, sa líši od e-mailu, ktorý ste predtým zaregistrovali. Prihláste sa znova kliknutím na tlačidlo nižšie."
+	},
+	sl: {
+		title: "Email konflikt",
+		button: "Prijava",
+		message: "Zdi se, da se vneseni e-poštni naslov razlikuje od tistega, ki je bil prej registriran. Prosimo, prijavite se ponovno s klikom na spodnji gumb."
+	},
+	sv: {
+		title: "Emailkonflikt",
+		button: "Logga in",
+		message: "Det verkar som att e-postadressen du angav skiljer sig från den som tidigare registrerades. Vänligen logga in igen genom att klicka på knappen nedan."
+	},
+	uk: {
+		title: "Конфлікт електронної пошти",
+		button: "Вхід",
+		message: "Схоже, електронна пошта, яку ви ввели, відрізняється від зареєстрованої раніше. Повторіть спробу входу, натиснувши кнопку нижче."
 	}
 }
 
